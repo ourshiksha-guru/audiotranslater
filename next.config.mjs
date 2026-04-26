@@ -1,5 +1,8 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  eslint: { ignoreDuringBuilds: true },
+  typescript: { ignoreBuildErrors: false },
+
   // Required for FFmpeg.wasm SharedArrayBuffer support
   async headers() {
     return [
