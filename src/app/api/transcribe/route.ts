@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import OpenAI from "openai";
 
-export const maxDuration = 120;
+export const maxDuration = 60;
 
 export async function POST(req: NextRequest) {
   if (!process.env.OPENAI_API_KEY) {
@@ -25,14 +25,22 @@ export async function POST(req: NextRequest) {
   try {
     const audioFile = new File([file], "audio.wav", { type: "audio/wav" });
 
+    // verbose_json gives us segment timestamps
     const response = await client.audio.transcriptions.create({
       model: "whisper-1",
       file: audioFile,
       response_format: "verbose_json",
       timestamp_granularities: ["segment"],
-    });
+    } as Parameters<typeof client.audio.transcriptions.create>[0]);
 
-    const segments = (response.segments ?? []).map((seg, i) => ({
+    // response is typed as Transcription — cast to access verbose_json fields
+    const raw = response as unknown as {
+      text: string;
+      language: string;
+      segments?: Array<{ start: number; end: number; text: string }>;
+    };
+
+    const segments = (raw.segments ?? []).map((seg, i) => ({
       id: i,
       start: seg.start,
       end: seg.end,
@@ -40,9 +48,9 @@ export async function POST(req: NextRequest) {
     }));
 
     return NextResponse.json({
-      text: response.text,
+      text: raw.text,
       segments,
-      language: response.language ?? "unknown",
+      language: raw.language ?? "unknown",
     });
   } catch (err: unknown) {
     const msg = err instanceof Error ? err.message : String(err);

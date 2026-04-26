@@ -3,10 +3,11 @@ import OpenAI from "openai";
 
 export const maxDuration = 60;
 
-// Voice mapping per language — choose voices that feel natural
-const VOICE_MAP: Record<string, "nova" | "shimmer" | "alloy" | "echo" | "fable" | "onyx"> = {
-  tanglish: "nova",    // warm, clear
-  hinglish: "shimmer", // bright, expressive
+type Voice = "nova" | "shimmer" | "alloy" | "echo" | "fable" | "onyx";
+
+const VOICE_MAP: Record<string, Voice> = {
+  tanglish: "nova",
+  hinglish: "shimmer",
 };
 
 export async function POST(req: NextRequest) {
@@ -27,17 +28,13 @@ export async function POST(req: NextRequest) {
   }
 
   const voice = VOICE_MAP[targetLang] ?? "nova";
-
   const client = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 
   try {
-    // OpenAI TTS supports ~4 096 chars — truncate gracefully
-    const input = text.slice(0, 4000);
-
     const mp3 = await client.audio.speech.create({
       model: "tts-1-hd",
       voice,
-      input,
+      input: text.slice(0, 4000),
       response_format: "mp3",
     });
 

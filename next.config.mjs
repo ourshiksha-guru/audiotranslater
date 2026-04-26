@@ -1,6 +1,5 @@
-import type { NextConfig } from "next";
-
-const nextConfig: NextConfig = {
+/** @type {import('next').NextConfig} */
+const nextConfig = {
   // Required for FFmpeg.wasm SharedArrayBuffer support
   async headers() {
     return [
@@ -13,6 +12,20 @@ const nextConfig: NextConfig = {
       },
     ];
   },
+
+  // Prevent server-side bundling of browser-only FFmpeg packages
+  webpack(config, { isServer }) {
+    if (isServer) {
+      config.externals = [
+        ...(Array.isArray(config.externals) ? config.externals : []),
+        "@ffmpeg/ffmpeg",
+        "@ffmpeg/util",
+        "@ffmpeg/core",
+      ];
+    }
+    return config;
+  },
+
   experimental: {
     serverActions: {
       bodySizeLimit: "50mb",
