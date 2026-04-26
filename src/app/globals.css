@@ -1,0 +1,107 @@
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap");
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --step-idle: #e2e8f0;
+    --step-active: #6366f1;
+    --step-complete: #10b981;
+    --step-error: #ef4444;
+  }
+
+  body {
+    @apply bg-slate-950 text-slate-100 font-sans antialiased;
+  }
+
+  * {
+    box-sizing: border-box;
+  }
+}
+
+@layer components {
+  .step-connector {
+    @apply flex-1 h-0.5 bg-slate-700 mx-1 mt-5 rounded-full transition-colors duration-500;
+  }
+  .step-connector.complete {
+    @apply bg-emerald-500;
+  }
+
+  .btn-primary {
+    @apply inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-indigo-600 hover:bg-indigo-500
+           text-white text-sm font-medium transition-colors disabled:opacity-40 disabled:cursor-not-allowed;
+  }
+
+  .btn-ghost {
+    @apply inline-flex items-center gap-2 px-4 py-2 rounded-lg border border-slate-700
+           hover:bg-slate-800 text-slate-300 text-sm font-medium transition-colors
+           disabled:opacity-40 disabled:cursor-not-allowed;
+  }
+
+  .btn-success {
+    @apply inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-emerald-600 hover:bg-emerald-500
+           text-white text-sm font-medium transition-colors disabled:opacity-40 disabled:cursor-not-allowed;
+  }
+
+  .card {
+    @apply bg-slate-900 border border-slate-800 rounded-2xl p-6 transition-all duration-300;
+  }
+
+  .card.active {
+    @apply border-indigo-500/50 shadow-lg shadow-indigo-500/10;
+  }
+
+  .card.complete {
+    @apply border-emerald-500/30;
+  }
+
+  .card.error {
+    @apply border-red-500/40;
+  }
+
+  .status-badge {
+    @apply inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium;
+  }
+
+  .status-badge.idle {
+    @apply bg-slate-800 text-slate-400;
+  }
+
+  .status-badge.active {
+    @apply bg-indigo-500/20 text-indigo-300;
+  }
+
+  .status-badge.complete {
+    @apply bg-emerald-500/20 text-emerald-300;
+  }
+
+  .status-badge.error {
+    @apply bg-red-500/20 text-red-300;
+  }
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-track {
+  background: #0f172a;
+}
+::-webkit-scrollbar-thumb {
+  background: #334155;
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #475569;
+}
+
+/* Progress bar animation */
+@keyframes progress-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+.progress-pulse {
+  animation: progress-pulse 1.5s ease-in-out infinite;
+}
